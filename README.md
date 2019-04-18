@@ -14,7 +14,7 @@ Lastly [Kibana](https://www.elastic.co/products/kibana) will show centralized lo
 First, build dockerized application with [Gradle](https://gradle.org/):
 
 ```bash
-./app/gradlew --project-dir=./webApplication build
+gradle --project-dir=./webApplication build
 ```
 
 
