@@ -1,14 +1,19 @@
 version: "2"
 services:
   app:
+    depends_on:
+      - fluentd
     build: ./webApplication/
+    network_mode: bridge
     ports:
       - "8080:8080"
     logging:
       driver: "fluentd"
       options:
-        fluentd-address: "10.150.236.78:24224"
+        fluentd-address: "127.0.0.1:24224"
         tag: "docker.app"
+    external_links:
+    - mysqldb:database
 
   fluentd:
     depends_on:
@@ -33,6 +38,7 @@ services:
       - discovery.zen.ping.unicast.hosts=elasticsearch
       - network.host=_site_
       - path.data=/usr/share/elasticsearch/data/$${HOSTNAME}
+      - FLUENT_ELASTICSEARCH_RELOAD_CONNECTIONS=false
     image: docker.elastic.co/elasticsearch/elasticsearch-oss:6.0.0
     ports:
       - "9200:9200"
@@ -45,7 +51,7 @@ services:
     environment:
       - SYSCTL.VM.MAX_MAP_COUNT=262144
     image: bortes/sysctl
-    network_mode: none
+    network_mode: bridge
     privileged: true
 
   kibana:
